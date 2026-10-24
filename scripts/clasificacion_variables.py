@@ -1,3 +1,17 @@
+# clasificacion_variables.py — Parte A: clasificación de las variables de clientes.csv.
+
+# El archivo data/clientes.csv tiene 12 clientes y 7 variables (más el id).
+
+# El objetivo: clasificar cada variable (numérica continua/discreta, categórica
+
+# binaria/ordinal/nominal) y verificar la clasificación en código.
+
+# Regla del capítulo 3: el dtype es una pista, no la clasificación — el criterio
+
+# (¿tiene sentido la mitad del valor? ¿hay orden entre las categorías?) decide.
+
+# Uso (desde la raíz del repositorio):  python scripts/clasificacion_variables.py
+
 import pandas as pd
 
 clientes = pd.read_csv("data/clientes.csv")
