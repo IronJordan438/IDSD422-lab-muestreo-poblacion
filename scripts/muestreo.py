@@ -29,7 +29,7 @@ def reporte(nombre, muestra, parametro):
 
 
 # ---------------------------------------------------------------------------
-# 1. La población y su parámetro (N = 400)
+print("1. La población y su parámetro (N = 400)")
 # ---------------------------------------------------------------------------
 # La base de fidelización completa es la población: 400 clientes. El parámetro
 # es el ingreso mensual promedio real (solo calculable porque la población es
@@ -42,36 +42,39 @@ print("Ciudades en la población:", poblacion["ciudad"].value_counts().to_dict()
 print()
 
 # ---------------------------------------------------------------------------
-# 2. Muestra por conveniencia: "los primeros que llegaron"
+print("# 2. Muestra por conveniencia: los primeros que llegaron")
 # ---------------------------------------------------------------------------
 # TODO 1: toma como muestra las primeras 20 filas de la población.
-#         Pista: .head(20) — igual que la demo de clase.
-#         Después de correrlo, mira la composición por ciudad que imprime el
-#         reporte: ¿es un corte al azar? ¿alguna ciudad falta por completo?
-muestra_conv = None
+muestra_conv = poblacion.head(20)
 
 # ---------------------------------------------------------------------------
-# 3. Muestra aleatoria simple: el sorteo de 20
+print("# 3. Muestra aleatoria simple: el sorteo de 20")
 # ---------------------------------------------------------------------------
 # TODO 2: sortea 20 clientes con la misma probabilidad para todos (20/400 = 5 %).
-#         Pista: .sample(20, random_state=1). Con random_state el resultado es
-#         reproducible; sin él cambia en cada ejecución.
+muestra_aas = poblacion.sample(20, random_state=1)
+
 # TODO 3: repite el sorteo con las semillas 2 a 5 y anota las 5 medias en el
 #         informe: la variabilidad de la estimación es parte de la lección.
-muestra_aas = None
+print("--- Experimento de variabilidad muestral (Muestra Aleatoria Simple con semillas 1 a 5) ---")
+for semilla in range(1, 6):
+    muestra_temp = poblacion.sample(20, random_state=semilla)
+    media_temp = muestra_temp["ingresos_mensuales"].mean()
+    print(f"  Semilla {semilla}: Media = {media_temp:.2f} USD (Diferencia: {media_temp - parametro:+.2f})")
+print("-" * 90)
+print()
 
 # ---------------------------------------------------------------------------
-# 4. Muestra estratificada: 5 % dentro de cada ciudad
+print("# 4. Muestra estratificada: 5 % dentro de cada ciudad")
 # ---------------------------------------------------------------------------
 # TODO 4: muestrea dentro de cada ciudad (el estrato), con afijación
 #         proporcional: 5 % de cada una → 10 de Quito, 6 de Guayaquil y 4 de
 #         Cuenca (20 en total).
-#         Pista: .groupby("ciudad") y .sample(frac=0.05, random_state=1).
-#         ¿Qué garantiza este diseño que el sorteo simple no garantiza?
-muestra_est = None
+muestra_est = poblacion.groupby("ciudad", group_keys=False).apply(
+    lambda estrato: estrato.sample(frac=0.05, random_state=1)
+)
 
 # ---------------------------------------------------------------------------
-# 5. Comparación final
+print("# 5. Comparación final")
 # ---------------------------------------------------------------------------
 reporte("Conveniencia", muestra_conv, parametro)
 reporte("Aleatorio simple", muestra_aas, parametro)
